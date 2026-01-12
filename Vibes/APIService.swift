@@ -14,7 +14,11 @@ class APIService {
             throw APIServiceError.invalidURL
         }
         
-        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+        // Normalize image orientation before converting to JPEG
+        // iOS cameras use EXIF orientation tags, but many backends don't respect them
+        let normalizedImage = image.normalizedOrientation()
+        
+        guard let imageData = normalizedImage.jpegData(compressionQuality: 0.8) else {
             throw APIServiceError.imageConversionFailed
         }
         
@@ -90,5 +94,28 @@ enum APIServiceError: LocalizedError {
         case .serverError(let message):
             return message
         }
+    }
+}
+
+// MARK: - UIImage Orientation Fix
+
+extension UIImage {
+    /// Returns a copy of the image with normalized orientation.
+    /// iOS cameras store photos with EXIF orientation metadata rather than
+    /// physically rotating the pixels. This method redraws the image with
+    /// the correct orientation applied to the pixel data.
+    func normalizedOrientation() -> UIImage {
+        // If already oriented correctly, return as-is
+        if imageOrientation == .up {
+            return self
+        }
+        
+        // Redraw the image with the correct orientation
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        draw(in: CGRect(origin: .zero, size: size))
+        let normalizedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return normalizedImage ?? self
     }
 }
