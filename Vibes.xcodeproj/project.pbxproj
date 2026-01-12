@@ -16,6 +16,7 @@
 		E81234560007 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81234550007 /* CameraView.swift */; };
 		E81234560008 /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81234550008 /* ResultView.swift */; };
 		E81234560009 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81234550009 /* ImagePicker.swift */; };
+		E81234560010 /* MySubmissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81234550011 /* MySubmissionsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		E81234550008 /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
 		E81234550009 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		E81234550010 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E81234550011 /* MySubmissionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySubmissionsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 				E81234550007 /* CameraView.swift */,
 				E81234550008 /* ResultView.swift */,
 				E81234550009 /* ImagePicker.swift */,
+				E81234550011 /* MySubmissionsView.swift */,
 				E81234550003 /* Assets.xcassets */,
 				E81234550010 /* Info.plist */,
 			);
@@ -153,6 +156,7 @@
 				E81234560007 /* CameraView.swift in Sources */,
 				E81234560008 /* ResultView.swift in Sources */,
 				E81234560009 /* ImagePicker.swift in Sources */,
+				E81234560010 /* MySubmissionsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -6,6 +6,7 @@ struct CameraView: View {
     var userName: String
     var onPhotoTaken: (UIImage) -> Void
     var onChangeName: () -> Void
+    var onShowSubmissions: () -> Void
     
     @State private var showingImagePicker = false
     @State private var showingPhotoLibrary = false
@@ -78,6 +79,22 @@ struct CameraView: View {
                         }
                         
                         Spacer()
+                        
+                        Button(action: onShowSubmissions) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "list.bullet")
+                                    .font(.system(size: 16))
+                                Text("my vibes")
+                                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                            }
+                            .foregroundColor(.white.opacity(0.8))
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 8)
+                            .background(
+                                Capsule()
+                                    .fill(.white.opacity(0.1))
+                            )
+                        }
                     }
                     .padding(.horizontal, 20)
                     .padding(.top, 10)
@@ -216,5 +233,5 @@ struct ScaleButtonStyle: ButtonStyle {
 }
 
 #Preview {
-    CameraView(capturedImage: .constant(nil), userName: "Justin", onPhotoTaken: { _ in }, onChangeName: {})
+    CameraView(capturedImage: .constant(nil), userName: "Justin", onPhotoTaken: { _ in }, onChangeName: {}, onShowSubmissions: {})
 }

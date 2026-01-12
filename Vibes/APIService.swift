@@ -75,6 +75,57 @@ class APIService {
             return false
         }
     }
+    
+    func deleteSubmission(id: String) async throws -> DeleteResponse {
+        guard let url = URL(string: "\(baseURL)/api/submissions/\(id)") else {
+            throw APIServiceError.invalidURL
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIServiceError.invalidResponse
+        }
+        
+        if httpResponse.statusCode == 200 {
+            let decoder = JSONDecoder()
+            return try decoder.decode(DeleteResponse.self, from: data)
+        } else {
+            if let apiError = try? JSONDecoder().decode(APIError.self, from: data) {
+                throw APIServiceError.serverError(apiError.detail)
+            }
+            throw APIServiceError.serverError("Server returned status \(httpResponse.statusCode)")
+        }
+    }
+    
+    func fetchSubmissions() async throws -> [Submission] {
+        guard let url = URL(string: "\(baseURL)/api/submissions") else {
+            throw APIServiceError.invalidURL
+        }
+        
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIServiceError.invalidResponse
+        }
+        
+        if httpResponse.statusCode == 200 {
+            let decoder = JSONDecoder()
+            return try decoder.decode([Submission].self, from: data)
+        } else {
+            if let apiError = try? JSONDecoder().decode(APIError.self, from: data) {
+                throw APIServiceError.serverError(apiError.detail)
+            }
+            throw APIServiceError.serverError("Server returned status \(httpResponse.statusCode)")
+        }
+    }
+    
+    func getPhotoURL(for submission: Submission) -> URL? {
+        return URL(string: "\(baseURL)\(submission.photoUrl)")
+    }
 }
 
 enum APIServiceError: LocalizedError {

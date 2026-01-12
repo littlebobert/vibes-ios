@@ -28,6 +28,11 @@ struct ContentView: View {
                         withAnimation(.easeInOut(duration: 0.3)) {
                             currentScreen = .namePrompt
                         }
+                    },
+                    onShowSubmissions: {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            currentScreen = .mySubmissions
+                        }
                     }
                 )
                 .transition(.opacity.combined(with: .scale(scale: 0.95)))
@@ -53,6 +58,14 @@ struct ContentView: View {
                     }
                 }
                 .transition(.opacity)
+                
+            case .mySubmissions:
+                MySubmissionsView(userName: userName) {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        currentScreen = .camera
+                    }
+                }
+                .transition(.opacity.combined(with: .move(edge: .trailing)))
             }
         }
         .animation(.easeInOut(duration: 0.3), value: currentScreenIdentifier)
@@ -72,6 +85,7 @@ struct ContentView: View {
         case .uploading: return "uploading"
         case .result: return "result"
         case .error: return "error"
+        case .mySubmissions: return "mySubmissions"
         }
     }
     

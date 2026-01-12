@@ -10,6 +10,10 @@ struct ResultView: View {
     @State private var showButton = false
     @State private var confettiTrigger = false
     @State private var scoreScale: CGFloat = 0.5
+    @State private var showDeleteConfirmation = false
+    @State private var isDeleting = false
+    @State private var deleteError: String?
+    @State private var isDeleted = false
     
     var scoreColor: Color {
         switch result.vibeScore {
@@ -227,8 +231,72 @@ struct ResultView: View {
                         .opacity(showButton ? 1.0 : 0.0)
                         .animation(.easeOut(duration: 0.4).delay(1.2), value: showButton)
                     
+                    Spacer().frame(height: 16)
+                    
+                    // Delete submission button
+                    if !isDeleted {
+                        Button(action: {
+                            showDeleteConfirmation = true
+                        }) {
+                            HStack(spacing: 6) {
+                                if isDeleting {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: .white.opacity(0.6)))
+                                        .scaleEffect(0.8)
+                                } else {
+                                    Image(systemName: "trash")
+                                        .font(.system(size: 14))
+                                }
+                                Text(isDeleting ? "deleting..." : "delete this submission")
+                                    .font(.system(size: 14, weight: .medium, design: .rounded))
+                            }
+                            .foregroundColor(.white.opacity(0.5))
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 10)
+                            .background(
+                                Capsule()
+                                    .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                            )
+                        }
+                        .disabled(isDeleting)
+                        .opacity(showButton ? 1.0 : 0.0)
+                        .animation(.easeOut(duration: 0.4).delay(1.3), value: showButton)
+                    } else {
+                        // Show deleted confirmation
+                        HStack(spacing: 6) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.system(size: 14))
+                            Text("submission deleted")
+                                .font(.system(size: 14, weight: .medium, design: .rounded))
+                        }
+                        .foregroundColor(.green.opacity(0.7))
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 10)
+                    }
+                    
+                    // Show delete error if any
+                    if let error = deleteError {
+                        Text(error)
+                            .font(.system(size: 12, weight: .medium, design: .rounded))
+                            .foregroundColor(.red.opacity(0.8))
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 20)
+                    }
+                    
                     Spacer().frame(height: 24)
                 }
+            }
+            .confirmationDialog(
+                "Delete Submission?",
+                isPresented: $showDeleteConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("Delete", role: .destructive) {
+                    deleteSubmission()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This will remove your submission from the leaderboard. You can submit again after deleting.")
             }
             
             // Confetti overlay for high scores
@@ -262,6 +330,32 @@ struct ResultView: View {
         if result.vibeScore >= 8 {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 confettiTrigger = true
+            }
+        }
+    }
+    
+    private func deleteSubmission() {
+        isDeleting = true
+        deleteError = nil
+        
+        Task {
+            do {
+                let response = try await APIService.shared.deleteSubmission(id: result.id)
+                await MainActor.run {
+                    isDeleting = false
+                    if response.success {
+                        withAnimation {
+                            isDeleted = true
+                        }
+                    } else {
+                        deleteError = response.message
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    isDeleting = false
+                    deleteError = error.localizedDescription
+                }
             }
         }
     }
