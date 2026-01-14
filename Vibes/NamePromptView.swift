@@ -155,7 +155,8 @@ extension View {
     }
 }
 
-// Hex color extension
+// MARK: - Hex Color Extension
+
 extension Color {
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)

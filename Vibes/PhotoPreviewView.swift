@@ -37,20 +37,7 @@ struct PhotoPreviewView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(maxHeight: 400)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(
-                                LinearGradient(
-                                    colors: [Color(hex: "667eea"), Color(hex: "f093fb")],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                ),
-                                lineWidth: 3
-                            )
-                    )
-                    .shadow(color: Color(hex: "667eea").opacity(0.3), radius: 20, y: 10)
-                    .padding(.horizontal, 24)
+                    .vibesStyle()
                 
                 Spacer()
                 
@@ -69,4 +56,34 @@ struct PhotoPreviewView: View {
         onSubmit: {},
         onRetake: {}
     )
+}
+
+// MARK: - Vibes Style Modifier
+
+struct VibesImageStyle: ViewModifier {
+    var cornerRadius: CGFloat = 20
+    var lineWidth: CGFloat = 3
+    
+    func body(content: Content) -> some View {
+        content
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .stroke(
+                        LinearGradient(
+                            colors: [Color(hex: "667eea"), Color(hex: "f093fb")],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: lineWidth
+                    )
+            )
+            .shadow(color: Color(hex: "667eea").opacity(0.3), radius: 20, y: 10)
+    }
+}
+
+extension View {
+    func vibesStyle(cornerRadius: CGFloat = 20, lineWidth: CGFloat = 3) -> some View {
+        modifier(VibesImageStyle(cornerRadius: cornerRadius, lineWidth: lineWidth))
+    }
 }
