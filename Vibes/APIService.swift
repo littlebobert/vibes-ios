@@ -4,8 +4,9 @@ import UIKit
 class APIService {
     static let shared = APIService()
     
-    // Your ngrok URL - update this if it changes
-    private let baseURL = "https://kaycee-soundable-unappeasingly.ngrok-free.dev"
+    // Backend base URL (workshop)
+    // Keep this as HTTPS to satisfy iOS App Transport Security (ATS).
+    private let baseURL = "https://vibes-backend-workshop-justin-00d8459b1843.herokuapp.com".trimmingCharacters(in: CharacterSet(charactersIn: "/"))
     
     private init() {}
     
