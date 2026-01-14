@@ -22,16 +22,26 @@ struct ContentView: View {
                     capturedImage: $capturedImage,
                     userName: userName,
                     onPhotoTaken: { image in
-                        uploadPhoto(image)
-                    },
-                    onChangeName: {
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                            currentScreen = .namePrompt
-                        }
+                        currentScreen = .preview(image)
                     },
                     onShowSubmissions: {
                         withAnimation(.easeInOut(duration: 0.3)) {
                             currentScreen = .mySubmissions
+                        }
+                    }
+                )
+                .transition(.opacity.combined(with: .scale(scale: 0.95)))
+                
+            case .preview(let image):
+                PhotoPreviewView(
+                    image: image,
+                    onSubmit: {
+                        uploadPhoto(image)
+                    },
+                    onRetake: {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            capturedImage = nil
+                            currentScreen = .camera
                         }
                     }
                 )
@@ -82,6 +92,7 @@ struct ContentView: View {
         switch currentScreen {
         case .namePrompt: return "namePrompt"
         case .camera: return "camera"
+        case .preview: return "preview"
         case .uploading: return "uploading"
         case .result: return "result"
         case .error: return "error"

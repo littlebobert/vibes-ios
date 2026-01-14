@@ -224,13 +224,6 @@ struct ResultView: View {
                     .offset(y: showButton ? 0 : 20)
                     .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(1.0), value: showButton)
                     
-                    // Leaderboard hint
-                    Text("🏆 check the leaderboard!")
-                        .font(.system(size: 13, weight: .medium, design: .rounded))
-                        .foregroundColor(.white.opacity(0.4))
-                        .opacity(showButton ? 1.0 : 0.0)
-                        .animation(.easeOut(duration: 0.4).delay(1.2), value: showButton)
-                    
                     Spacer().frame(height: 16)
                     
                     // Delete submission button

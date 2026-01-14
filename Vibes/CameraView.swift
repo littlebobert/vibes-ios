@@ -5,7 +5,6 @@ struct CameraView: View {
     @Binding var capturedImage: UIImage?
     var userName: String
     var onPhotoTaken: (UIImage) -> Void
-    var onChangeName: () -> Void
     var onShowSubmissions: () -> Void
     
     @State private var showingImagePicker = false
@@ -62,22 +61,6 @@ struct CameraView: View {
                 // Header
                 VStack(spacing: 8) {
                     HStack {
-                        Button(action: onChangeName) {
-                            HStack(spacing: 6) {
-                                Image(systemName: "person.circle.fill")
-                                    .font(.system(size: 18))
-                                Text(userName)
-                                    .font(.system(size: 16, weight: .semibold, design: .rounded))
-                            }
-                            .foregroundColor(.white.opacity(0.8))
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 8)
-                            .background(
-                                Capsule()
-                                    .fill(.white.opacity(0.1))
-                            )
-                        }
-                        
                         Spacer()
                         
                         Button(action: onShowSubmissions) {
@@ -223,15 +206,6 @@ struct CameraView: View {
     }
 }
 
-// Custom button style for scale animation
-struct ScaleButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.9 : 1.0)
-            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: configuration.isPressed)
-    }
-}
-
 #Preview {
-    CameraView(capturedImage: .constant(nil), userName: "Justin", onPhotoTaken: { _ in }, onChangeName: {}, onShowSubmissions: {})
+    CameraView(capturedImage: .constant(nil), userName: "Justin", onPhotoTaken: { _ in }, onShowSubmissions: {})
 }

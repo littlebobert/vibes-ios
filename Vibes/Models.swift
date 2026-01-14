@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 // MARK: - API Response Models
 
@@ -52,6 +53,7 @@ struct Submission: Codable, Identifiable {
 enum AppScreen {
     case namePrompt
     case camera
+    case preview(UIImage)
     case uploading
     case result(VibeResult)
     case error(String)
