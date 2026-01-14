@@ -20,30 +20,13 @@ struct PhotoPreviewView: View {
             .ignoresSafeArea()
             
             VStack(spacing: 24) {
+                /// to do: instruction text
                 
-                Text("👀")
-                    .font(.system(size: 50))
+                /// to do: image preview, etc.
                 
-                Text("looking good?")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
-                
-                Text("preview your photo before submitting")
-                    .font(.system(size: 15, weight: .medium, design: .rounded))
-                    .foregroundColor(.white.opacity(0.6))
-                
-                // Photo preview
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(maxHeight: 400)
-                    .vibesStyle()
-                
-                Spacer()
-                
-                VibesButton(action: onSubmit, imageSystemName: "checkmark.circle.fill", text: "check my vibes", style: .prominent)
+                /// to do: Continue button
 
-                VibesButton(action: onRetake, imageSystemName: "arrow.counterclockwise", text: "retake photo", style: .standard)
+                /// to do: Retake button
             }
             .padding(24)
         }

@@ -18,7 +18,8 @@ class APIService {
         // iOS cameras use EXIF orientation tags, but many backends don't respect them
         let normalizedImage = image.normalizedOrientation()
         
-        guard let imageData = normalizedImage.jpegData(compressionQuality: 0.8) else {
+        // Resize and compress to stay under API limits (~2.5MB target)
+        guard let imageData = normalizedImage.compressedForUpload(maxSizeBytes: 2_500_000) else {
             throw APIServiceError.imageConversionFailed
         }
         
@@ -148,7 +149,7 @@ enum APIServiceError: LocalizedError {
     }
 }
 
-// MARK: - UIImage Orientation Fix
+// MARK: - UIImage Helpers
 
 extension UIImage {
     /// Returns a copy of the image with normalized orientation.
@@ -168,5 +169,36 @@ extension UIImage {
         UIGraphicsEndImageContext()
         
         return normalizedImage ?? self
+    }
+    
+    /// Compresses and resizes the image to fit under the specified byte limit.
+    /// Useful for API uploads with size restrictions (e.g., Anthropic's 5MB limit).
+    func compressedForUpload(maxSizeBytes: Int = 2_500_000) -> Data? {
+        var currentImage = self
+        var compressionQuality: CGFloat = 0.8
+        let maxDimension: CGFloat = 2048
+        
+        // Step 1: Resize if dimensions are too large
+        if max(size.width, size.height) > maxDimension {
+            let scale = maxDimension / max(size.width, size.height)
+            let newSize = CGSize(width: size.width * scale, height: size.height * scale)
+            
+            UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+            draw(in: CGRect(origin: .zero, size: newSize))
+            if let resizedImage = UIGraphicsGetImageFromCurrentImageContext() {
+                currentImage = resizedImage
+            }
+            UIGraphicsEndImageContext()
+        }
+        
+        // Step 2: Compress with decreasing quality until under limit
+        var imageData = currentImage.jpegData(compressionQuality: compressionQuality)
+        
+        while let data = imageData, data.count > maxSizeBytes, compressionQuality > 0.1 {
+            compressionQuality -= 0.1
+            imageData = currentImage.jpegData(compressionQuality: compressionQuality)
+        }
+        
+        return imageData
     }
 }

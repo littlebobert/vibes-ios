@@ -22,7 +22,8 @@ struct ContentView: View {
                     capturedImage: $capturedImage,
                     userName: userName,
                     onPhotoTaken: { image in
-                        currentScreen = .preview(image)
+                        uploadPhoto(image)
+                        /// to do: change to transition to `.preview`
                     },
                     onShowSubmissions: {
                         withAnimation(.easeInOut(duration: 0.3)) {
